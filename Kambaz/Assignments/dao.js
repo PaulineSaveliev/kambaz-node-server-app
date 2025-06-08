@@ -29,7 +29,7 @@ export function deleteAssignment(assignmentId) {
 }
 export function updateAssignment(assignmentId, assignmentUpdates) {
     const { assignments } = Database;
-    const assignment = modules.find((a) => a._id === assignmentId);
+    const assignment = assignments.find((a) => a._id === assignmentId);
     Object.assign(assignment, assignmentUpdates);
     return assignment;
 }
