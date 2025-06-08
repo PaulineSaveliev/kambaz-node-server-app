@@ -6,32 +6,33 @@ import Hello from "./Hello.js"
 import Lab5 from "./Lab5/index.js"
 import cors from "cors";
 import UserRoutes from './Kambaz/Users/routes.js';
+import CourseRoutes from "./Kambaz/Courses/routes.js";
 import session from "express-session"
 import "dotenv/config"
 
 const app = express();
-app.use(
-    cors({
+app.use(cors({
         credentials: true,
-        origin: process.env.NETLIFY_URL || "http://localhost:5173"
-    })
-);
+        origin: process.env.NETLIFY_URL || "http://localhost:5173"})
+); // cors before session
 const sessionOptions = {
     secret: process.env.SESSION_SECRET || "kambaz",
     resave: false,
     saveUninitialized: false,
 };
-if (process.env.NNODE_ENV !== "development") {
+if (process.env.NODE_ENV !== "development") {
     sessionOptions.proxy = true;
     sessionOptions.cookie = {
         sameSite: "none",
         secure: true,
         domain: process.env.NODE_SERVER_DOMAIN,
     };
-}
-app.use(session(sessionOptions))
+} // session before express!
 app.use(express.json()); // after cors before routes!
+app.use(session(sessionOptions))
+
 UserRoutes(app);
+CourseRoutes(app);
 Lab5(app);
 Hello(app);
 app.listen(process.env.ZPORT || 4000);

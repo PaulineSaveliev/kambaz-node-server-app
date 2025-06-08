@@ -2,6 +2,9 @@
 // CS5610 - Summer 1 2025
 
 import * as dao from "./dao.js";
+import * as courseDao from "../Courses/dao.js"
+import * as enrollmentsDao from "../Enrollments/dao.js"
+import Database from "../Database/index.js"
 
 export default function UserRoutes(app) {
     const createUser = (req, res) => {
@@ -54,6 +57,23 @@ export default function UserRoutes(app) {
         }
         res.json(currentUser);
     };
+    const findCoursesForEnrolledUser = (req, res) => {
+        let userId = req.params.userId;
+        if (!userId) {
+            res.sendStatus(401);
+            return;
+        }
+        const courses = dao.findCoursesForEnrolledUser(userId);
+        res.json(courses);
+    }
+    const createCourse = (req, res) => {
+        let userId = req.params.userId;
+        const newCourse = courseDao.createCourse(req.body);
+        enrollmentsDao.enrollUserInCourse(userId, newCourse._id);
+        res.json(newCourse);
+    }
+    app.post("/api/users/:userId/courses", createCourse)
+    app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
     app.post("/api/users", createUser);
     app.get("/api/users", findAllUsers);
     app.get("/api/users/:userId", findUserById);
