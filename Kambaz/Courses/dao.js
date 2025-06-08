@@ -11,7 +11,6 @@ export function findAllCourses() {
 export function createCourse(course) {
     const { courses } = Database;
     const newCourse = {...course, _id: uuidv4()};
-    //Database.courses = [...Database.courses, newCourse];
     courses.push(newCourse)
     return newCourse;
 }
@@ -27,12 +26,14 @@ export function deleteCourse(courseId) {
             enrollments.splice(i, 1);
         }
     }
-    return (200);
+    return (204);
 }
 
 export function updateCourse(courseId, courseUpdates) {
     const { courses } = Database;
     const course = courses.find((course) => course._id === courseId);
-    Object.assign(course, courseUpdates);
+    if (course) {
+        Object.assign(course, courseUpdates);
+    }
     return course;
 }

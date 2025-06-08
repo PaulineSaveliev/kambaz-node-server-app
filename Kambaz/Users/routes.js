@@ -4,7 +4,6 @@
 import * as dao from "./dao.js";
 import * as courseDao from "../Courses/dao.js"
 import * as enrollmentsDao from "../Enrollments/dao.js"
-import Database from "../Database/index.js"
 
 export default function UserRoutes(app) {
     const createUser = (req, res) => {
