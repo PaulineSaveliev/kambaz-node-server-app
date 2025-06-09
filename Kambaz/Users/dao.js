@@ -3,6 +3,8 @@
 
 import { v4 as uuidv4 } from "uuid";
 import model from "./model.js";
+import courseModel from "../Courses/model.js";
+import enrollModel from "../Enrollments/model.js";
 import db from "../Database/index.js"
 
 
@@ -25,7 +27,9 @@ export const findUsersByPartialName = (partialName) => {
     });
 }
 
-export const findCoursesForEnrolledUser = (userId) => {
-    const result = courses.filter((course) => enrollments.some((enr) => (enr.user === userId && enr.course === course._id)))
-    return result;
+export const findCoursesForEnrolledUser = async (userId) => {
+    const enrollments = await enrollModel.find({ user: userId });
+    const courseIds = enrollments.map((enr) => enr.course);
+    const courses = await courseModel.find({ _id: { $in: courseIds } });
+    return courses;
 }

@@ -3,37 +3,28 @@
 
 import Database from "../Database/index.js"
 import { v4 as uuidv4 } from "uuid"
+import model from "./model.js";
 
 export function findAllCourses() {
-    return Database.courses;
+    return model.find();
 }
 
 export function createCourse(course) {
-    const { courses } = Database;
     const newCourse = {...course, _id: uuidv4()};
-    courses.push(newCourse)
-    return newCourse;
+    return model.create(newCourse);
 }
 
 export function deleteCourse(courseId) {
     const { courses, enrollments } = Database;
-    const cIndx = courses.findIndex(course => course._id === courseId);
-    if (cIndx !== -1) {
-        courses.splice(cIndx, 1);
-    }
+    const deletion = model.deleteOne({_id: courseId});
     for (let i = enrollments.length - 1; i >= 0; i--) {
         if (enrollments[i].course === courseId) {
             enrollments.splice(i, 1);
         }
     }
-    return (204);
+    return deletion;
 }
 
 export function updateCourse(courseId, courseUpdates) {
-    const { courses } = Database;
-    const course = courses.find((course) => course._id === courseId);
-    if (course) {
-        Object.assign(course, courseUpdates);
-    }
-    return course;
+    return model.updateOne({_id: courseId}, {$set: courseUpdates});
 }
