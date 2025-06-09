@@ -5,10 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 import model from "./model.js";
 import courseModel from "../Courses/model.js";
 import enrollModel from "../Enrollments/model.js";
-import db from "../Database/index.js"
 
 
-let { courses, enrollments } = db;
+
 export const createUser = async (user) => {
     const newUser = {...user, _id:uuidv4()}
     return model.create(newUser);

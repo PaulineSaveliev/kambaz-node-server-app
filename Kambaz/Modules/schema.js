@@ -1,0 +1,14 @@
+// Pauline Saveliev
+// CS5610 - Summer 1 2025
+
+import mongoose from "mongoose";
+
+const moduleSchema = new mongoose.Schema({
+        _id: String,
+        name: String,
+        description: String,
+        course: { type: String, ref: "CourseModel" },
+    },
+    {collection: "modules"}
+)
+export default moduleSchema;

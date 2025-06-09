@@ -1,18 +1,21 @@
 // Pauline Saveliev
 // CS5610 - Summer 1 2025
 
-import Database from "../Database/index.js"
-import { v4 as uuidv4 } from "uuid"
+import model from "./model.js"
+import userModel from "../Users/model.js"
 
-export function enrollUserInCourse(userId, courseId) {
-    const { enrollments } = Database;
-    const newEnr = {_id: uuidv4(), user: userId, course: courseId};
-    enrollments.push(newEnr);
-    return newEnr;
+export async function enrollUserInCourse(user, course) {
+    return model.create({ user, course, _id: `${user}-${course}` });
 }
 
-export function removeUserFromCourse(userId, courseId) {
-    const { enrollments } = Database;
-    const index = enrollments.findIndex((e) => e.course === courseId && e.user === userId)
-    enrollments.splice(index, 1);
+export function removeUserFromCourse(user, course) {
+    return model.deleteOne({user, course});
+}
+
+export async function findUsersForCourse(course) {
+    const enrollments = await model.find({course: course});
+    const userIds = enrollments.map((e) => e.user);
+    const users = userModel.find({_id: {$in: userIds}});
+    console.log(users);
+    return users;
 }
